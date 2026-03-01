@@ -136,3 +136,4 @@ coverage/
 
 # Misc
 .turbo/
+todo-chat-bot/values-secrets.yaml

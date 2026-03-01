@@ -26,8 +26,8 @@ This project demonstrates containerized frontend and backend services orchestrat
 | Service   | URL |
 |-----------|-----|
 | Frontend  | http://localhost:3000 |
-| Backend   | http://localhost:7860 |
-| Health Check | http://localhost:7860/health |
+| Backend   | http://localhost:8001 |
+| Health Check | http://localhost:8001/health |
 
 ---
 
@@ -87,8 +87,10 @@ kubectl get services
 
 6️⃣ Port Forward Services
 
-kubectl port-forward service/todo-chat-bot-backend 7860:7860 &
+```bash
+kubectl port-forward service/todo-chat-bot-backend 8001:7860 &
 kubectl port-forward service/todo-chat-bot-frontend 3000:3000 &
+```
 
 🐳 Minikube / Docker Startup Logs
 

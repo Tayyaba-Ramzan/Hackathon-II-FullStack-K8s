@@ -1,0 +1,456 @@
+openapi: 3.0.3
+info:
+  title: Todo App Backend API
+  description: RESTful API for task management with user support
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+tags:
+  - name: tasks
+    description: Task management operations
+  - name: users
+    description: User management operations
+
+paths:
+  /tasks:
+    get:
+      tags:
+        - tasks
+      summary: Get all tasks
+      description: Retrieve a list of all tasks in the system
+      operationId: getTasks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskRead'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - tasks
+      summary: Create a new task
+      description: Create a new task for a specific user
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+        '400':
+          description: Bad request (e.g., user_id does not exist)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /tasks/{task_id}:
+    get:
+      tags:
+        - tasks
+      summary: Get a task by ID
+      description: Retrieve a specific task by its ID
+      operationId: getTaskById
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The task ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Invalid task ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    put:
+      tags:
+        - tasks
+      summary: Update a task
+      description: Update an existing task by its ID
+      operationId: updateTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The task ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - tasks
+      summary: Delete a task
+      description: Delete a task by its ID
+      operationId: deleteTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The task ID
+      responses:
+        '204':
+          description: Task deleted successfully (no content)
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tasks/{task_id}/toggle:
+    patch:
+      tags:
+        - tasks
+      summary: Toggle task completion status
+      description: Toggle the is_completed status of a task (true to false or false to true)
+      operationId: toggleTaskCompletion
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The task ID
+      responses:
+        '200':
+          description: Task completion status toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get all users
+      description: Retrieve a list of all users in the system
+      operationId: getUsers
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRead'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      description: Create a new user account
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+        '400':
+          description: Bad request (e.g., email or username already exists)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /users/{user_id}:
+    get:
+      tags:
+        - users
+      summary: Get a user by ID
+      description: Retrieve a specific user by their ID
+      operationId: getUserById
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The user ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Invalid user ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+components:
+  schemas:
+    TaskCreate:
+      type: object
+      required:
+        - title
+        - user_id
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+          example: "Complete project documentation"
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Detailed task description
+          example: "Write comprehensive documentation for the API endpoints"
+        user_id:
+          type: integer
+          description: ID of the user who owns this task
+          example: 1
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+          example: "Updated task title"
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Detailed task description
+          example: "Updated description"
+        is_completed:
+          type: boolean
+          description: Task completion status
+          example: true
+
+    TaskRead:
+      type: object
+      required:
+        - id
+        - title
+        - is_completed
+        - user_id
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique task identifier
+          example: 1
+        title:
+          type: string
+          description: Task title
+          example: "Complete project documentation"
+        description:
+          type: string
+          nullable: true
+          description: Detailed task description
+          example: "Write comprehensive documentation for the API endpoints"
+        is_completed:
+          type: boolean
+          description: Task completion status
+          example: false
+        user_id:
+          type: integer
+          description: ID of the user who owns this task
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          description: Task creation timestamp
+          example: "2026-02-23T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2026-02-23T10:30:00Z"
+
+    UserCreate:
+      type: object
+      required:
+        - email
+        - username
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: User's email address
+          example: "user@example.com"
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9_]+$'
+          description: User's username (alphanumeric and underscores only)
+          example: "john_doe"
+
+    UserRead:
+      type: object
+      required:
+        - id
+        - email
+        - username
+        - created_at
+      properties:
+        id:
+          type: integer
+          description: Unique user identifier
+          example: 1
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "user@example.com"
+        username:
+          type: string
+          description: User's username
+          example: "john_doe"
+        created_at:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+          example: "2026-02-23T10:00:00Z"
+
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Task not found"
+
+    ValidationError:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+                description: Location of the error
+              msg:
+                type: string
+                description: Error message
+              type:
+                type: string
+                description: Error type
+          example:
+            - loc: ["body", "title"]
+              msg: "field required"
+              type: "value_error.missing"

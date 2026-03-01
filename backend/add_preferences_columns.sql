@@ -1,0 +1,5 @@
+-- Add preference columns to user table
+ALTER TABLE "user"
+ADD COLUMN IF NOT EXISTS dark_mode BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS email_notifications BOOLEAN DEFAULT TRUE,
+ADD COLUMN IF NOT EXISTS task_reminders BOOLEAN DEFAULT TRUE;

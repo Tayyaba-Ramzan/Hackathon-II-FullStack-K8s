@@ -69,7 +69,8 @@
       "Bash(minikube ip:*)",
       "Bash(xargs kill)",
       "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)"
     ]
   }
 }
